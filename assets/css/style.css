@@ -1,0 +1,112 @@
+@charset "utf-8";
+/* CSS Document */
+
+@font-face {
+    font-family: 'Chivo';
+    src: url('../../assets/fonts/chivoregular.eot');
+    src: url('../../assets/fonts/chivoregular.eot?#iefix') format('embedded-opentype'),
+         url('../../assets/fonts/chivoregular.woff') format('woff'),
+         url('../../assets/fonts/chivoregular.ttf') format('truetype'),
+         url('../../assets/fonts/chivoregular.svg#AvenirOblique') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ChivoBlack';
+    src: url('../../assets/fonts/chivoblack.eot');
+    src: url('../../assets/fonts/chivoblack.eot?#iefix') format('embedded-opentype'),
+         url('../../assets/fonts/chivoblack.woff') format('woff'),
+         url('../../assets/fonts/chivoblack.ttf') format('truetype'),
+         url('../../assets/fonts/chivoblack.svg#AvenirOblique') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.chivo { font-family:'Chivo'; }
+.chivo-black { font-family:'ChivoBlack'; }
+
+body {
+	margin:0;
+	font-family:'Arial';
+	font-size:16px;
+	background-color:#E4E4E4;
+}
+
+.bodyBox {
+	margin: 60px 0 0;
+}
+
+.bodyBox_sideMenu {
+	margin: 60px 0 0 200px;
+}
+
+.mattswell {
+	border-radius:7px;
+	padding:8px;
+	background-image:url(../../assets/img/ui/well_bg.png);
+	background-position:center top;
+	background-repeat:repeat-x;
+	background-color:#EFEFEF;
+	border:thin solid #C8C8C8;
+}
+
+.mattswell_title {
+	font-size:20px;
+	color:#666666;
+	padding:0 0 10px 0;
+}
+
+.font_disabled {
+	font-style:italic;
+	color:#666;
+}
+
+.hover_table > tbody > tr:HOVER {
+	background-color:#FFFFFF;
+}
+
+.solid_table > tbody > tr {
+	background-color:#F0F0F0;
+}
+
+.admin_button {
+	font-size:16px;
+	cursor:pointer;
+	margin-right:5px;
+    padding:5px 5px 7px 5px;
+    border-radius: 5px;
+}
+
+.admin_button.black:hover {
+    text-decoration:none;
+    color: #FFFFFF !important;
+    background-color: #666666;
+    -webkit-box-shadow:inset 0 -2px 0 0 rgba(0,0,0,.3);
+    box-shadow:inset 0 -2px 0 0 rgba(0,0,0,.3);
+}
+
+.admin_button.blue:hover {
+    text-decoration:none;
+    color: #FFFFFF !important;
+    background-color: #08C;
+    -webkit-box-shadow:inset 0 -2px 0 0 rgba(0,0,0,.3);
+    box-shadow:inset 0 -2px 0 0 rgba(0,0,0,.3);
+}
+
+.admin_button.red:hover {
+    text-decoration:none;
+    color: #FFFFFF !important;
+    background-color: #FF0000;
+    -webkit-box-shadow:inset 0 -2px 0 0 rgba(0,0,0,.3);
+    box-shadow:inset 0 -2px 0 0 rgba(0,0,0,.3);
+}
+
+a:hover { cursor:pointer; }
+
+
+
+
+
+
+
