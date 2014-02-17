@@ -73,7 +73,10 @@
 
     </div>
 
-    <a class="btn btn-primary" style="float:right; margin:15px 20px 0 0 ;" href="docs"><i class="icon-film icon-white"></i> View Docs</a>
+    <?php if($admin_mode == true && uri_string() == 'ww/admindash') { ?>
+        <!--<a class="btn btn-primary" style="float:right; margin:15px 20px 0 0 ;" href="docs"><i class="icon-film icon-white"></i> View Docs</a>-->
+    <?php } else { ?>
+    <?php } ?>
 
 </div>
 
