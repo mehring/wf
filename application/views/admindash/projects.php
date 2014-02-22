@@ -47,6 +47,18 @@
             	<td align="right" style="font-weight:bold;">Received:</td>
                 <td><input type="text" class="field_addProject_received" /></td>
             </tr>
+            <tr style="background-color:transparent;">
+            	<td align="right" style="font-weight:bold;">Price Per Large Format:</td>
+                <td><input type="text" class="field_addProject_pplf" /></td>
+            </tr>
+            <tr style="background-color:transparent;">
+            	<td align="right" style="font-weight:bold;">Price Per Small Format:</td>
+                <td><input type="text" class="field_addProject_ppsf" /></td>
+            </tr>
+            <tr style="background-color:transparent;">
+            	<td align="right" style="font-weight:bold;">Price Per Box:</td>
+                <td><input type="text" class="field_addProject_ppb" /></td>
+            </tr>
         </table>
     </div>
     <div class="modal_addProject_loading" style="text-align:center; display:none;">
@@ -102,8 +114,11 @@
 		var project_id = $('.cur_project_id').val();
 		var name_entered = $('.field_addProject').val()
 		var received_entered = $('.field_addProject_received').val()
-		if (name_entered.length == 0 || received_entered.length == 0) {
-			alert("Name or Received field is blank.");
+		var pplf_entered = $('.field_addProject_pplf').val();
+		var ppsf_entered = $('.field_addProject_ppsf').val();
+		var ppb_entered = $('.field_addProject_ppb').val();
+		if (name_entered.length == 0 || received_entered.length == 0 || pplf_entered.length == 0  || ppsf_entered.length == 0 || ppb_entered.length == 0) {
+			alert("All fields are required.");
 		} else {
 			$('.addProject_label').html(name_entered);
 			$('.modal_addProject_name').hide();
@@ -116,7 +131,10 @@
 				data: {
 					project_id:project_id,
 					project_to_add:name_entered,
-					project_to_add_received:received_entered
+					project_to_add_received:received_entered,
+					pplf:pplf_entered,
+					ppsf:ppsf_entered,
+					ppb:ppb_entered
 				},
 				success: function(data) {
 					$('.modal_addProject').modal('hide');
@@ -127,8 +145,8 @@
 						refresh_admin_projects_list();
 					}
 				},
-				fail: function(data) {
-					alert("Sorry, something went terribly wrong...");
+				error: function(data) {
+					alert("Could not add / modify project with values given.");
 					$('.modal_addProject_name').show();
 					$('.modal_addProject_footer').show();
 					$('.modal_addProject_loading').hide();
@@ -144,6 +162,9 @@
 		$('.modal_addProject_loading').hide();
 		$('.field_addProject').val('');
 		$('.field_addProject_received').val('');
+		$('.field_addProject_pplf').val('');
+		$('.field_addProject_ppsf').val('');
+		$('.field_addProject_ppb').val('');
 		$('.cur_project_id').val("-1");
 		$('.admin_modal_project_title').html("Add");
 		$('.modal_addProject').on('shown',function() {
@@ -192,14 +213,20 @@
 		var ID_selected = $(this).attr('itemID');
 		var project_name = $(this).attr('project_name');
 		var project_received = $(this).attr('project_received');
+		var pplf = $(this).attr('pplf');
+		var ppsf = $(this).attr('ppsf');
+		var ppb = $(this).attr('ppb');
 		$('.modal_addProject').modal('show');
 		$('.modal_addProject_name').show();
 		$('.modal_addProject_footer').show();
 		$('.modal_addProject_loading').hide();
 		$('.field_addProject').val(project_name);
 		$('.field_addProject_received').val(project_received);
+		$('.field_addProject_pplf').val(pplf);
+		$('.field_addProject_ppsf').val(ppsf);
+		$('.field_addProject_ppb').val(ppb);
 		$('.cur_project_id').val(ID_selected);
-		$('.admin_modal_project_title').html("Rename");
+		$('.admin_modal_project_title').html("Modify");
 		$('.modal_addProject').on('shown',function() {
 			$('.field_addProject').focus();
 		});
