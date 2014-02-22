@@ -11,7 +11,7 @@ class Ajax_project extends CI_Controller {
 	}
 	
 	public function get_admin_projects_list() {
-		$this->db->select('id,project_name,project_received,pplf,ppsf,ppb');
+		$this->db->select('id,project_name,project_received,destroyed,pplf,ppsf,ppb');
 		$this->db->order_by('project_name','asc');
 		$this->db->where('hidden',0);
 		$query = $this->db->get_where('projects',array('hidden'=>0));
@@ -21,6 +21,7 @@ class Ajax_project extends CI_Controller {
 				<thead><tr>
 					<th>Project Name</th>
 					<th>Received</th>
+					<th>Destroyed</th>
 					<th>Price / LF</th>
 					<th>Price / SF</th>
 					<th>Price / Box</th>
@@ -34,9 +35,13 @@ class Ajax_project extends CI_Controller {
 		$received_timestamp = strtotime($row->project_received);
 		$date_clean = date("M j, Y",$received_timestamp);
 		
+		$destroyed = $row->destroyed;
+		if ($destroyed == '') { $destroyed = 'Unknown'; }
+		
 		echo("  	<tr class=\"project_row\" itemID=".$row->id.">
 						<td><img src=".base_url("assets/img/ui/icons/project.png")." />&nbsp;".$row->project_name."</td>
 						<td>".$date_clean."</td>
+						<td>".$destroyed."</td>
 						<td>".$row->pplf."</td>
 						<td>".$row->ppsf."</td>
 						<td>".$row->ppb."</td>
@@ -83,6 +88,7 @@ class Ajax_project extends CI_Controller {
 		$project_id = $_POST['project_id'];
 		$project_to_add = $_POST['project_to_add'];
 		$project_to_add_received = $_POST['project_to_add_received'];
+		$destroyed = $_POST['destroyed'];
 		$pplf = $_POST['pplf'];
 		$ppsf = $_POST['ppsf'];
 		$ppb = $_POST['ppb'];
@@ -90,6 +96,7 @@ class Ajax_project extends CI_Controller {
 		$data = array(
 			'project_name'=>$project_to_add,
 			'project_received'=>$project_to_add_received,
+			'destroyed'=>$destroyed,
 			'pplf'=>$pplf,
 			'ppsf'=>$ppsf,
 			'ppb'=>$ppb

@@ -48,6 +48,16 @@
                 <td><input type="text" class="field_addProject_received" /></td>
             </tr>
             <tr style="background-color:transparent;">
+            	<td align="right" style="font-weight:bold;">Destroyed:</td>
+                <td>
+                	<select class="field_addProject_destroyed">
+                    	<option value="">Unknown</option>
+                        <option value="Destroyed">Destroyed</option>
+                        <option value="Not Destroyed">Not Destroyed</option>
+                    </select>
+                </td>
+            </tr>
+            <tr style="background-color:transparent;">
             	<td align="right" style="font-weight:bold;">Price Per Large Format:</td>
                 <td><input type="text" class="field_addProject_pplf" /></td>
             </tr>
@@ -112,8 +122,9 @@
 	
 	function sumbit_addProject() {
 		var project_id = $('.cur_project_id').val();
-		var name_entered = $('.field_addProject').val()
-		var received_entered = $('.field_addProject_received').val()
+		var name_entered = $('.field_addProject').val();
+		var received_entered = $('.field_addProject_received').val();
+		var destroyed_entered = $('.field_addProject_destroyed').val();
 		var pplf_entered = $('.field_addProject_pplf').val();
 		var ppsf_entered = $('.field_addProject_ppsf').val();
 		var ppb_entered = $('.field_addProject_ppb').val();
@@ -132,6 +143,7 @@
 					project_id:project_id,
 					project_to_add:name_entered,
 					project_to_add_received:received_entered,
+					destroyed:destroyed_entered,
 					pplf:pplf_entered,
 					ppsf:ppsf_entered,
 					ppb:ppb_entered
