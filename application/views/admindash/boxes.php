@@ -90,15 +90,28 @@
 <div class="modal hide modal_renameBox">
   <div class="modal-header">
     <button type="button" class="close button_close_renameBox" aria-hidden="true">&times;</button>
-    <h3>Rename Box - Enter New Name</h3>
+    <h3>Modify Box</h3>
   </div>
   <div class="modal-body">
     <div class="modal_renameBox_name" style="text-align:center;">
     	<input type="hidden" class="field_renameBox_id" maxlength="100" />
-        <input type="text" class="field_renameBox" maxlength="100" />
+        <table width="100%" cellpadding="4px" cellspacing="0" border="0">
+        	<tr style="background-color:transparent;">
+            	<td align="right" style="font-weight:bold;">Name:</td>
+                <td><input type="text" class="field_renameBox" maxlength="100" /></td>
+            </tr>
+            <tr style="background-color:transparent;">
+            	<td align="right" style="font-weight:bold;"># Small Format:</td>
+                <td><input type="text" class="field_modBox_sf" /></td>
+            </tr>
+            <tr style="background-color:transparent;">
+            	<td align="right" style="font-weight:bold;"># Large Format:</td>
+                <td><input type="text" class="field_modBox_lf" /></td>
+            </tr>
+        </table>
     </div>
     <div class="modal_renameBox_loading" style="text-align:center; display:none;">
-    	Attempting to rename <div class="renameBox_label" style="display:inline-block"></div><br />
+    	Attempting to modify <div class="renameBox_label" style="display:inline-block"></div><br />
     	<img src='<?php echo(base_url("assets/img/ajax-loader.gif")); ?>'>
     </div>
   </div>
@@ -162,6 +175,8 @@
 				<thead><tr>\
 					<th>Box Name</th>\
 					<th>Status</th>\
+					<th># SF</th>\
+					<th># LF</th>\
 					<th>Actions</th>\
 				</tr></thead>\
 				\
@@ -191,8 +206,14 @@
 								</li>\
 							</ul>\
 						</td>\
+						<td>"+data.boxes[i]['sf']+"</td>\
+						<td>"+data.boxes[i]['lf']+"</td>\
 						<td>\
-						  <a class=\"admin_button black button_admin_rename_box\" style=\"color:black;\" itemID="+data.boxes[i]['id']+" box_name=\""+data.boxes[i]['box_name']+"\"><span class=\"ico-edit\"></span>&nbsp;Rename</a>\
+						  <a class=\"admin_button black button_admin_rename_box\" style=\"color:black;\"\
+						  	itemID="+data.boxes[i]['id']+"\
+							sf="+data.boxes[i]['sf']+"\
+							lf="+data.boxes[i]['lf']+"\
+							box_name=\""+data.boxes[i]['box_name']+"\"><span class=\"ico-edit\"></span>&nbsp;Modify</a>\
 						  <a class=\"admin_button red button_admin_delete_box\" style=\"color:red;\" itemID="+data.boxes[i]['id']+"><span class=\"ico-trash\"></span>&nbsp;Delete</a>\
 						</td>\
 					</tr>";
@@ -222,6 +243,8 @@
 	function sumbit_rename_box() {
 		var box_id = $('.field_renameBox_id').val();
 		var new_box_name = $('.field_renameBox').val();
+		var box_sf = $('.field_modBox_sf').val();
+		var box_lf = $('.field_modBox_lf').val();
 		$('.modal_renameBox_name').hide();
 		$('.modal_renameBox_footer').hide();
 		$('.modal_renameBox_loading').show();
@@ -229,13 +252,18 @@
 			url: '<?php echo(base_url("index.php/ajax_box/rename_box")); ?>',
 			type: 'post',
 			dataType: 'html',
-			data: {box_to_change:box_id,new_name:new_box_name},
+			data: {
+				box_to_change:box_id,
+				new_name:new_box_name,
+				box_lf:box_lf,
+				box_sf:box_sf
+			},
 			success: function(data) {
 				$('.modal_renameBox').modal('hide');
 				refresh_admin_boxes_list(cur_project);
 			},
-			fail: function(data) {
-				alert("Error while renaming the box: "+data);
+			error: function(data) {
+				alert("I could not modify the box with that information.");
 				$('.modal_renameBox_name').show();
 				$('.modal_renameBox_footer').show();
 				$('.modal_renameBox_loading').hide();
@@ -305,9 +333,13 @@
 	$('.button_admin_rename_box').live('click', function() {
 		var box_name = $(this).attr('box_name');
 		var box_id = $(this).attr('itemID');
+		var box_sf = $(this).attr('sf');
+		var box_lf = $(this).attr('lf');
 		$('.renameBox_label').html(box_name);
 		$('.field_renameBox').val(box_name);
 		$('.field_renameBox_id').val(box_id);
+		$('.field_modBox_sf').val(box_sf);
+		$('.field_modBox_lf').val(box_lf);
 		
 		$('.modal_renameBox_name').show();
 		$('.modal_renameBox_footer').show();

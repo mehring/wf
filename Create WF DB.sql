@@ -105,7 +105,9 @@ PRIMARY KEY (`id`));INSERT INTO `webflow`.`auth` (`admin_pass`) VALUES ('');
 ALTER TABLE `webflow`.`projects` 
 ADD COLUMN `pplf` DECIMAL(10,2) NULL AFTER `hidden`,
 ADD COLUMN `ppsf` DECIMAL(10,2) NULL AFTER `pplf`,
-ADD COLUMN `ppb` DECIMAL(10,2) NULL AFTER `ppsf`;
-
-ALTER TABLE `webflow`.`projects` 
+ADD COLUMN `ppb` DECIMAL(10,2) NULL AFTER `ppsf`,
 ADD COLUMN `destroyed` VARCHAR(100) NULL AFTER `ppb`;
+
+ALTER TABLE `webflow-dev`.`boxes` 
+ADD COLUMN `sf` INT(10) NULL AFTER `box_name`,
+ADD COLUMN `lf` INT(10) NULL AFTER `sf`;
