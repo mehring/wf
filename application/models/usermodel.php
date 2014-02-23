@@ -20,7 +20,7 @@ class Usermodel extends CI_Model {
 	}
 	
 	function getUserData($id = -1) {
-		$this->db->select('users.id,users.job_id,users.project_id,users.box_id,user_name,job_name,project_name,box_name,user_start');
+		$this->db->select('users.id,users.job_id,users.project_id,users.box_id,user_name,job_name,project_name,box_name,boxes.sf,boxes.lf,user_start');
 		$this->db->from('users');
 		$this->db->where(array('user_hidden'=>'0'));
 		if ($id != -1) {

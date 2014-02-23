@@ -182,9 +182,36 @@
   </div>
 </div>
 
+<div class="modal hide modal_set_box_data">
+  <div class="modal-header">
+      <input type="hidden" value="" class="clock_out_or_switch" />
+      <input type="hidden" value="<?php echo $status_info[0]->box_id; ?>" class="cur_box_id" />
+    <h3>Box Image Count?</h3>
+  </div>
+  <div class="modal-body message_body">
+  	<table width="100%" cellpadding="4px" cellspacing="0" border="0">
+        <tr style="background-color:transparent;">
+            <td align="right" style="font-weight:bold;"># Small Format:</td>
+            <td><input type="text" class="field_box_data_sf" value="<?php echo($status_info[0]->sf); ?>" maxlength="50" /></td>
+        </tr>
+        <tr style="background-color:transparent;">
+            <td align="right" style="font-weight:bold;"># Large Format:</td>
+            <td><input type="text" class="field_box_data_lf" value="<?php echo($status_info[0]->lf); ?>" maxlength="50" /></td>
+        </tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-primary button_save_box_data"><i class="icon-ok icon-white"></i> Save</a>
+  </div>
+</div>
+
 <script type="text/javascript">
 	var user_messages = false;
 	var user_tasks = false;
+	
+	function isNumber(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
 
 	function sync_heights() {
 		$(".well_tasks").height($(".well_clock").height())
@@ -446,7 +473,7 @@
 		});
 	});
 	
-	$(".button_clockIn, .button_switchTask").click(function() {
+	$(".button_clockIn").click(function() {
         var user_id = <?php echo($currentUserID); ?>;
 		cur_job_id = $(".dash_cur_job").attr("itemID");
 		cur_project_id = $(".dash_cur_project").attr("itemID");
@@ -464,28 +491,87 @@
 	});
 	
 	$(".button_clockOut").click(function() {
-		$(".info_clockout").hide();
-		$(".info_loading").show();
-		sync_heights();
+        $('.clock_out_or_switch').val('clock_out');
+		$('.modal_set_box_data').modal('show');
+	});
+	
+	$('.button_switchTask').click(function() {
+		var user_id = <?php echo($currentUserID); ?>;
 		$.ajax({
-			url: '<?php echo(base_url("index.php/ajax_user/clock_out")); ?>',
-			dataType: 'html',
-			success: function(data) {
-				$(".info_loading").hide();
-				$(".info_clockin").show();
-				updateWidget_stats();
-				load_tasks();
-				sync_heights();
-			},
-			fail: function(data) {
-				alert("OMG something went terribly wrong when trying to clock you out =(");
-				$(".info_loading").hide();
-				$(".info_clockout").show();
-				updateWidget_stats();
-				load_tasks();
-				sync_heights();
+            url: '<?php echo(base_url("index.php/ajax_message/get_message_count")); ?>',
+            data: { user_id:user_id },
+            success: function (data) {
+                if(data > 0) {
+                    alert('Please read all of your messages first.');
+                } else {
+                    $('.clock_out_or_switch').val('switch');
+					$('.modal_set_box_data').modal('show');
+                }
+            }
+        });
+	});
+	
+	$('.button_save_box_data').click(function() {
+		var user_id = <?php echo($currentUserID); ?>;
+		var box_id = $('.cur_box_id').val();
+		var box_sf = $('.field_box_data_sf').val();
+		var box_lf = $('.field_box_data_lf').val();
+		var clock_out_or_switch = $('.clock_out_or_switch').val();
+		cur_job_id = $(".dash_cur_job").attr("itemID");
+		cur_project_id = $(".dash_cur_project").attr("itemID");
+		
+		if (isNumber(box_sf) == false || isNumber(box_lf) == false) {
+			alert('Both values must be a number.');
+		} else {
+			
+			$('.modal_set_box_data').modal('hide');
+		
+			//ajax call to set box image count data
+			$.ajax({
+				url: '<?php echo(base_url("index.php/ajax_box/save_box_data")); ?>',
+				data: { 
+					box_id:box_id,
+					box_sf:box_sf,
+					box_lf:box_lf 
+				}
+			});
+			
+			//show clock in modal if switch task, else just clock out
+			switch(clock_out_or_switch) {
+				
+				case "switch":
+					showClockInModal(cur_job_id,cur_project_id);
+					break;
+					
+				
+				case "clock_out": 
+					$(".info_clockout").hide();
+					$(".info_loading").show();
+					sync_heights();
+					$.ajax({
+						url: '<?php echo(base_url("index.php/ajax_user/clock_out")); ?>',
+						dataType: 'html',
+						success: function(data) {
+							$(".info_loading").hide();
+							$(".info_clockin").show();
+							updateWidget_stats();
+							load_tasks();
+							sync_heights();
+						},
+						error: function(data) {
+							alert("An error occured while trying to clock you out");
+							$(".info_loading").hide();
+							$(".info_clockout").show();
+							updateWidget_stats();
+							load_tasks();
+							sync_heights();
+						}
+					});
+					break;
 			}
-		});
+			
+		}
+		
 	});
 	
 	$(".refresh_stats").click(function() {updateWidget_stats();})

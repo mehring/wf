@@ -141,7 +141,7 @@
                                 <tr>
                                     <td align="center" valign="top" colspan="2">
                                         <div class="btn btn-success startlog_button_gotoselectuser" style="margin:10px; width:200px;"><i class="icon-list icon-white"></i>&nbsp;User Selection</div><br />
-                                        <div class="btn btn-primary startlog_button_gotodashboard" style="width:200px;"><i class="icon-home icon-white"></i>&nbsp;My Dashboard</div>
+                                        <div class="btn btn-primary " onclick="location.reload();" style="width:200px;"><i class="icon-home icon-white"></i>&nbsp;My Dashboard</div>
                                     </td>
                                 </tr>
                             </table>

@@ -50,6 +50,18 @@ class Ajax_box extends CI_Controller {
 		$this->db->update('boxes',$data);
 	}
 	
+	public function save_box_data() {
+		$box_id = $_GET['box_id'];
+		$box_sf = $_GET['box_sf'];
+		$box_lf = $_GET['box_lf'];
+		$data = array(
+			'sf' => $box_sf,
+			'lf' => $box_lf
+		);
+		$this->db->where('id',$box_id);
+		$this->db->update('boxes',$data);
+	}
+	
 	public function get_admin_boxes_projectselector_list() {
 		$this->db->select('id,project_name');
 		$this->db->order_by('project_name','asc');
