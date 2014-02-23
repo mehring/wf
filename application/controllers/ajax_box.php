@@ -31,7 +31,13 @@ class Ajax_box extends CI_Controller {
 	public function rename_box() {
 		$box_id = $_POST['box_to_change'];
 		$new_name = $_POST['new_name'];
-		$data = array('box_name'=>$new_name);
+		$box_lf = $_POST['box_lf'];
+		$box_sf = $_POST['box_sf'];
+		$data = array(
+			'box_name'=>$new_name,
+			'sf'=>$box_sf,
+			'lf'=>$box_lf
+		);
 		$this->db->where('id',$box_id);
 		$this->db->update('boxes',$data);
 	}
@@ -98,21 +104,26 @@ class Ajax_box extends CI_Controller {
 			));
 		}
 		
-		$cnt = 0;
+		//$cnt = 0;
 		$this->db->select('id');
 		$query = $this->db->get_where('boxes',array('project_id'=>$_POST['project_selected']));
-		foreach ($query->result() as $row) { $cnt++; }
-		$return->boxes_total = $cnt;
+		//foreach ($query->result() as $row) { $cnt++; }
+		//$return->boxes_total = $cnt;
+		$return->boxes_total = $query->num_rows();
 		
-		$this->db->select('id,project_id,box_name,box_status_id');
+		$this->db->select('id,project_id,box_name,box_status_id,sf,lf');
 		$this->db->order_by('box_name','asc');
 		$query = $this->db->get_where('boxes',array('project_id'=>$_POST['project_selected']),$itemsper,$offset);
 		foreach ($query->result() as $row) {
+			$sf = 0 + $row->sf;
+			$lf = 0 + $row->lf;
 			array_push($return->boxes,array(
 				'id'=>$row->id,
 				'box_project_id'=>$row->project_id,
 				'box_name'=>$row->box_name,
-				'box_status_id'=>$row->box_status_id
+				'box_status_id'=>$row->box_status_id,
+				'sf'=>$sf,
+				'lf'=>$lf
 			));
 		}
 		
