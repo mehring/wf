@@ -122,24 +122,44 @@ class Report extends CI_Controller {
         $this->load->view('reports/project',$report_data);
     }
 
-	public function payroll() {
-		if ($this->data['admin_mode']!=true) {return;}
-		
-		//obtain pay period info
-		$pps = $_GET['pps'];
-		$ppe = $_GET['ppe'];
-		
-		//choose a filename
-		$filename = 'Payroll '.date('M j, Y',$pps).' - '.date('M j, Y',$ppe).'.pdf';
-		
-		//get report data
-		$this->load->model('reportmodel');
-		$report_data = $this->reportmodel->payroll_report($pps,$ppe);
-		$html = $this->load->view('reports/payroll',$report_data,true);
-		
-		//generate report
-		$this->load->library('html_to_pdf');
-		$this->html_to_pdf->view_pdf_from_html($filename,$html);
-	}
+    public function payroll() {
+        if ($this->data['admin_mode']!=true) {return;}
+
+        //obtain pay period info
+        $pps = $_GET['pps'];
+        $ppe = $_GET['ppe'];
+
+        //choose a filename
+        $filename = 'Payroll '.date('M j, Y',$pps).' - '.date('M j, Y',$ppe).'.pdf';
+
+        //get report data
+        $this->load->model('reportmodel');
+        $report_data = $this->reportmodel->payroll_report($pps,$ppe);
+        $html = $this->load->view('reports/payroll',$report_data,true);
+
+        //generate report
+        $this->load->library('html_to_pdf');
+        $this->html_to_pdf->view_pdf_from_html($filename,$html);
+    }
+
+    public function userhoursbyweek() {
+        if ($this->data['admin_mode']!=true) {return;}
+
+        //obtain pay period info
+        $pps = $_GET['pps'];
+        $ppe = $_GET['ppe'];
+
+        //choose a filename
+        $filename = 'Payroll '.date('M j, Y',$pps).' - '.date('M j, Y',$ppe).'.pdf';
+
+        //get report data
+        $this->load->model('reportmodel');
+        $report_data = $this->reportmodel->payroll_report($pps,$ppe);
+        $html = $this->load->view('reports/payroll',$report_data,true);
+
+        //generate report
+        $this->load->library('html_to_pdf');
+        $this->html_to_pdf->view_pdf_from_html($filename,$html);
+    }
 
 }
