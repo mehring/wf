@@ -11,9 +11,35 @@ class Reportmodel extends CI_Model {
     function project_report($project_id) {
         $return = array();
 
-        $this->db->select('project_name,project_received');
+        //get project info
+        $this->db->select('project_name,project_received,pplf,ppsf,ppb');
         $result = $this->db->get_where('projects',array('id'=>$project_id))->row();
         $return['project'] = $result;
+
+        //get boxes info
+        $this->db->select('box_status_id,box_name,sf,lf');
+        $result = $this->db->get_where('boxes',array('project_id'=>$project_id))->result();
+        $return['boxes'] = $result;
+
+        //get project logs
+        $this->db->select('
+            logs.id,
+            logs.user_id,
+            logs.job_id,
+            logs.box_id,
+            logs.log_start,
+            logs.log_stop,
+            users.user_name,
+            boxes.box_name,
+            jobs.job_name
+        ');
+        $this->db->where('logs.project_id',$project_id);
+        $this->db->join('users','logs.user_id = users.id','left');
+        $this->db->join('boxes','logs.box_id = boxes.id','left');
+        $this->db->join('jobs','logs.job_id = jobs.id','left');
+        $this->db->order_by('boxes.box_name');
+        $report_logs = $this->db->get('logs')->result();
+        $return['report_logs'] = $report_logs;
 
         return $return;
     }
@@ -139,9 +165,8 @@ class Reportmodel extends CI_Model {
             //GET LOG DATA
             $payperiod_start = date("Y-m-d H:i:s",$pps);
             $payperiod_end = date("Y-m-d H:i:s",$ppe);
-            $where = array('log_start >=' => $payperiod_start, 'log_start <' => $payperiod_end);
             $this->db->select('log_start,log_stop');
-            $this->db->where($where);
+            $this->db->where(array('log_start >=' => $payperiod_start, 'log_start <' => $payperiod_end));
             $this->db->order_by('log_start','desc');
             $query = $this->db->get_where('logs',array('user_id'=>$user->id));
 
@@ -166,6 +191,15 @@ class Reportmodel extends CI_Model {
             $seconds_payperiod_w1ot = 0;
             $seconds_payperiod_w2r = 0;
             $seconds_payperiod_w2ot = 0;
+            $user->dayTimes = array(
+                'mon' => 0,
+                'tue' => 0,
+                'wed' => 0,
+                'thu' => 0,
+                'fri' => 0,
+                'sat' => 0,
+                'sun' => 0
+            );
 
             //CALCULATE PAY PERIOD TIME
             $w1_start = $pps;
@@ -175,6 +209,42 @@ class Reportmodel extends CI_Model {
             foreach ($logs as $log) {
                 if ($log['start_timestamp'] >= $w1_start && $log['start_timestamp'] <= $w1_end) {$seconds_payperiod_w1r += $log['diff_seconds'];}
                 if ($log['start_timestamp'] >= $w2_start && $log['start_timestamp'] <= $w2_end) {$seconds_payperiod_w2r += $log['diff_seconds'];}
+
+                //add log time to monday
+                if ($log['start_timestamp'] >= $w1_start && $log['start_timestamp'] < $w1_start + 86400) {
+                    $user->dayTimes['mon'] += round($log['diff_seconds'] / 3600,2);
+                }
+
+                //add log time to tuesday
+                if ($log['start_timestamp'] >= ($w1_start + 86400) && $log['start_timestamp'] < $w1_start + (86400*2)) {
+                    $user->dayTimes['tue'] += round($log['diff_seconds'] / 3600,2);
+                }
+
+                //add log time to wednesday
+                if ($log['start_timestamp'] >= ($w1_start + (86400*2)) && $log['start_timestamp'] < $w1_start + (86400*3)) {
+                    $user->dayTimes['wed'] += round($log['diff_seconds'] / 3600,2);
+                }
+
+                //add log time to thursday
+                if ($log['start_timestamp'] >= ($w1_start + (86400*3)) && $log['start_timestamp'] < $w1_start + (86400*4)) {
+                    $user->dayTimes['thu'] += round($log['diff_seconds'] / 3600,2);
+                }
+
+                //add log time to friday
+                if ($log['start_timestamp'] >= ($w1_start + (86400*4)) && $log['start_timestamp'] < $w1_start + (86400*5)) {
+                    $user->dayTimes['fri'] += round($log['diff_seconds'] / 3600,2);
+                }
+
+                //add log time to saturday
+                if ($log['start_timestamp'] >= ($w1_start + (86400*5)) && $log['start_timestamp'] < $w1_start + (86400*6)) {
+                    $user->dayTimes['sat'] += round($log['diff_seconds'] / 3600,2);
+                }
+
+                //add log time to sunday
+                if ($log['start_timestamp'] >= ($w1_start + (86400*6)) && $log['start_timestamp'] < $w1_start + (86400*7)) {
+                    $user->dayTimes['sun'] += round($log['diff_seconds'] / 3600,2);
+                }
+
             }
             if ($seconds_payperiod_w1r > 144000) {
                 $seconds_payperiod_w1ot = $seconds_payperiod_w1r - 144000;
@@ -187,8 +257,8 @@ class Reportmodel extends CI_Model {
 
             //$user->time_payperiod = $this->timemodel->getCleanTime($seconds_payperiod_w1r + $seconds_payperiod_w2r);
             //$user->time_payperiod_ot = $this->timemodel->getCleanTime($seconds_payperiod_w1ot + $seconds_payperiod_w2ot);
-            $user->time_payperiod = $this->timemodel->getPayrollTime($seconds_payperiod_w1r + $seconds_payperiod_w2r);
-            $user->time_payperiod_ot = $this->timemodel->getPayrollTime($seconds_payperiod_w1ot + $seconds_payperiod_w2ot);
+            $user->time_payperiod = $this->timemodel->getPayrollTime($seconds_payperiod_w1r /*+ $seconds_payperiod_w2r*/);
+            $user->time_payperiod_ot = $this->timemodel->getPayrollTime($seconds_payperiod_w1ot /*+ $seconds_payperiod_w2ot*/);
 
         }
 

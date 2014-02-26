@@ -50,8 +50,8 @@ class Ajax_reports extends CI_Controller {
 
         //get report data
         $this->load->model('reportmodel');
-        $report_data = $this->reportmodel->payroll_report($pps,$ppe);
-        $return->html = $this->load->view('reports/payroll',$report_data,true);
+        $report_data = $this->reportmodel->userhoursbyweek_report($pps,$ppe);
+        $return->html = $this->load->view('reports/userHoursByWeek',$report_data,true);
 
         echo json_encode($return);
     }

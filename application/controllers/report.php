@@ -21,30 +21,10 @@ class Report extends CI_Controller {
         //get report data
         $this->load->model('reportmodel');
         $report_data = $this->reportmodel->project_report($project_id);
-
-        //get report logs
-        $this->db->select('
-            logs.id,
-            logs.user_id,
-            logs.job_id,
-            logs.box_id,
-            logs.log_start,
-            logs.log_stop,
-            users.user_name,
-            boxes.box_name,
-            jobs.job_name
-        ');
-        $this->db->where('logs.project_id',$project_id);
-        $this->db->join('users','logs.user_id = users.id','left');
-        $this->db->join('boxes','logs.box_id = boxes.id','left');
-        $this->db->join('jobs','logs.job_id = jobs.id','left');
-        $this->db->order_by('boxes.box_name');
-        $report_logs = $this->db->get('logs')->result();
-        $report_data['report_logs'] = $report_logs;
-
-        $report_jobs = array();
+        $report_logs = $report_data['report_logs'];
 
         //setup containers for unique jobs
+        $report_jobs = array();
         foreach($report_logs as $report_log) {
             $report_jobs[$report_log->job_name] = new stdClass();
             $report_jobs[$report_log->job_name]->boxes = array();
@@ -53,10 +33,12 @@ class Report extends CI_Controller {
         }
 
         //gather add the meat to the containers
+        $seconds_total = 0;
         foreach($report_logs as $report_log) {
 
             //how many seconds did this log take?
             $num_seconds = strtotime($report_log->log_stop) - strtotime($report_log->log_start);
+            $seconds_total += $num_seconds;
 
             //add total seconds to job
             $report_jobs[$report_log->job_name]->total_seconds += $num_seconds;
@@ -110,13 +92,38 @@ class Report extends CI_Controller {
             $this->gcharts->DataTable('ProjectByJob')->addRow(array($report_job->job_name, round($report_job->total_seconds/3600,2)));
         }
 
-
         $config = array(
             'title' => '',
             'is3D' => TRUE
         );
 
         $this->gcharts->PieChart('ProjectByJob')->setConfig($config);
+
+        //get total number of sf/lf images
+        $report_data['total_sf'] = 0;
+        $report_data['total_lf'] = 0;
+        foreach ($report_data['boxes'] as $box) {
+            $report_data['total_sf'] += $box->sf;
+            $report_data['total_lf'] += $box->lf;
+        }
+
+        //get number of boxes
+        $report_data['num_boxes'] = count($report_data['boxes']);
+
+        //get avg number of sf/lf images per box
+        $report_data['avg_sf'] = $report_data['total_sf'] / $report_data['num_boxes'];
+        $report_data['avg_lf'] = $report_data['total_lf'] / $report_data['num_boxes'];
+
+        //calculate cost for sf/lf images and boxes
+        $report_data['cost_sf'] = $report_data['project']->ppsf * $report_data['total_sf'];
+        $report_data['cost_lf'] = $report_data['project']->pplf * $report_data['total_lf'];
+        $report_data['cost_boxes'] = $report_data['project']->ppb * $report_data['num_boxes'];
+
+        //calculate amount to bill
+        $report_data['cost_total'] = $report_data['cost_sf'] + $report_data['cost_lf'] + $report_data['cost_boxes'];
+
+        //calculate cost per hour (with $seconds_total)
+        $report_data['cost_per_hour'] = round($report_data['cost_total'] / ($seconds_total/3600),2);
 
         //output
         $this->load->view('reports/project',$report_data);

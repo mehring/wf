@@ -38,14 +38,69 @@ $seconds_total = 0;
             height:400px;
         }
 
+        .graytext {
+            color: #8B8A8A;
+            font-size:14px;
+        }
+
+        .greentext {
+            color: #49A942 !important;
+        }
+
     </style>
 
 </head>
 <body>
 
     <h2 align="center">Webflow Project Report</h2>
-    <strong>Project: </strong><?php echo $project->project_name; ?><br />
-    <strong>Total Hours: </strong><span id="hours_total"></span>
+    <strong>Project: </strong><?php echo $project->project_name; ?>
+    <hr/>
+    <table cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td width="25%" align="left" valign="top">
+                <h4>Project Totals</h4>
+                <div class="graytext">
+                    <strong>Total Hours: </strong><span id="hours_total"></span><br/>
+                    <span class="greentext">
+                        <strong>Total Bill: </strong>$<?php echo $cost_total; ?><br/>
+                        <strong>Bill / Hour: </strong>$<?php echo $cost_per_hour; ?>
+                    </span>
+                </div>
+            </td>
+            <td width="25%" align="left" valign="top">
+                <h4>Small Format</h4>
+                <div class="graytext">
+                    <strong>Avg. Small Format: </strong><?php echo $avg_sf; ?><br/>
+                    <strong>Total Small Format: </strong><?php echo $total_sf; ?><br/>
+                    <strong>Small Format Price: </strong>$<?php echo $project->ppsf; ?><br/>
+                    <span class="greentext">
+                        <strong>Small Format Bill: </strong>$<?php echo $cost_sf; ?>
+                    </span>
+                </div>
+            </td>
+            <td width="25%" align="left" valign="top">
+                <h4>Large Format</h4>
+                <div class="graytext">
+                    <strong>Avg. Large Format: </strong><?php echo $avg_lf; ?><br/>
+                    <strong>Total Large Format: </strong><?php echo $total_lf; ?><br/>
+                    <strong>Large Format Price: </strong>$<?php echo $project->pplf; ?><br/>
+                    <span class="greentext">
+                        <strong>Large Format Bill: </strong>$<?php echo $cost_lf; ?>
+                    </span>
+                </div>
+            </td>
+            <td width="25%" align="left" valign="top">
+                <h4>Boxes</h4>
+                <div class="graytext">
+                    <strong>Total Boxes: </strong><?php echo $num_boxes; ?><br/>
+                    <strong>Box Price: </strong>$<?php echo $project->ppb; ?><br/>
+                    <span class="greentext">
+                        <strong>Boxes Bill: </strong>$<?php echo $cost_boxes; ?>
+                    </span>
+                </div>
+            </td>
+        </tr>
+    </table>
 
     <?php
         echo $this->gcharts->PieChart('ProjectByJob')->outputInto('report_div');

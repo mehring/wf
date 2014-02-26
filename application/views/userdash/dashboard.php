@@ -192,11 +192,17 @@
   	<table width="100%" cellpadding="4px" cellspacing="0" border="0">
         <tr style="background-color:transparent;">
             <td align="right" style="font-weight:bold;"># Small Format:</td>
-            <td><input type="text" class="field_box_data_sf" value="<?php echo($status_info[0]->sf); ?>" maxlength="50" /></td>
+            <td><input type="text" class="field_box_data_sf" value="<?php
+                                                                        $total_sf = 0;
+                                                                        if ($status_info[0]->sf > 0) { $total_sf = $status_info[0]->sf; }
+                                                                         echo($total_sf); ?>" maxlength="50" /></td>
         </tr>
         <tr style="background-color:transparent;">
             <td align="right" style="font-weight:bold;"># Large Format:</td>
-            <td><input type="text" class="field_box_data_lf" value="<?php echo($status_info[0]->lf); ?>" maxlength="50" /></td>
+            <td><input type="text" class="field_box_data_lf" value="<?php
+                                                                        $total_lf = 0;
+                                                                        if ($status_info[0]->lf > 0) { $total_lf = $status_info[0]->lf; }
+                                                                        echo($total_lf); ?>" maxlength="50" /></td>
         </tr>
     </table>
   </div>

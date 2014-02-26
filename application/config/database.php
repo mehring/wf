@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = '127.0.0.1:3306';
+$db['default']['hostname'] = '127.0.0.1:3307';
 $db['default']['username'] = 'root';
-$db['default']['password'] = 'StarFish789';
-$db['default']['database'] = 'webflow-dev';
+$db['default']['password'] = 'RedFish123';
+$db['default']['database'] = 'webflow';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
