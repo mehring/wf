@@ -111,8 +111,8 @@ class Report extends CI_Controller {
         $report_data['num_boxes'] = count($report_data['boxes']);
 
         //get avg number of sf/lf images per box
-        $report_data['avg_sf'] = $report_data['total_sf'] / $report_data['num_boxes'];
-        $report_data['avg_lf'] = $report_data['total_lf'] / $report_data['num_boxes'];
+        $report_data['avg_sf'] = round($report_data['total_sf'] / $report_data['num_boxes'],2);
+        $report_data['avg_lf'] = round($report_data['total_lf'] / $report_data['num_boxes'],2);
 
         //calculate cost for sf/lf images and boxes
         $report_data['cost_sf'] = $report_data['project']->ppsf * $report_data['total_sf'];
